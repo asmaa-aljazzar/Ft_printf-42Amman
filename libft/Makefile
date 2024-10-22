@@ -9,7 +9,7 @@
 #    Updated: 2024/09/28 14:15:43 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-CC = cc
+CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 NAME = libft.a
 SRCS = ft_isalnum.c ft_isalpha.c ft_isascii.c\
