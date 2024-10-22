@@ -6,7 +6,7 @@ NAME = libftprintf.a
 LIBFT_DIR = ../libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Werror -Wextra
 
 SRCS = ft_printf.c ft_format.c
