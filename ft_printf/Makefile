@@ -37,6 +37,7 @@ $(FUNCS_DIR)/%.o: $(FUNCS_DIR)/%.c
 
 clean:
 	@rm -f $(OBJS)
+	@rm -f $(FUNCS_OBJS)
 	@$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
