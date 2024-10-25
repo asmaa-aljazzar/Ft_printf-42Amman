@@ -15,7 +15,11 @@ int ft_printf(const char *format, ...)
 
 int main()
 {
-    int printed = ft_printf("Asmaa %c Asia %c Osama %c", '1');
+    void *ptr;
+    int c = 5;
+    ptr = &c;
+
+    int printed = ft_printf("my pointer is : %p", ptr);
     printf("\n%d", printed);
     return 0;
 }

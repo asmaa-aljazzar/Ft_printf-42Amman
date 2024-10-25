@@ -1,0 +1,43 @@
+#include "../ft_printf.h"
+
+static int print_pointer_in_hex(unsigned long addr, int printed_chars);
+
+int ft_ptr_format(const char *format, int *i, va_list args, int printed_chars)
+{
+    if (format[*i] == 'p')
+    {
+        void *ptr; 
+        ptr = va_arg(args, void *);
+        unsigned long addr = (unsigned long)ptr;
+        printed_chars += print_pointer_in_hex(addr, printed_chars);
+    }
+    return (printed_chars);
+}
+
+static int print_pointer_in_hex(unsigned long addr,int printed_chars)
+{
+    char buffer[20];
+    int index;
+
+    index = 19;
+    buffer[index--] = '\0';
+    if (!addr)
+        buffer[index--] = '0';
+    else
+    {
+        while (addr > 0)
+        {
+            int digit = addr % 16;
+            if ( digit < 10)
+                buffer[index--] = digit + '0';
+            else
+                buffer[index--] = digit - 10 + 'a';
+            addr /= 16;
+        }
+    }
+    buffer[index--] = 'x';
+    buffer[index] = '0';
+    ft_putstr_fd(&buffer[index], 1);
+    printed_chars += ft_strlen(buffer);
+    return (printed_chars);
+}

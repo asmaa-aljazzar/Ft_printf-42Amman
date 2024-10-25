@@ -8,7 +8,8 @@ LIBFT_DIR = ../libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
 
 FUNCS_DIR = ft_printf_util
-FUNCS_SRCS = ${FUNCS_DIR}/ft_char_format.c
+FUNCS_SRCS = ${FUNCS_DIR}/ft_char_format.c ${FUNCS_DIR}/ft_str_format.c ${FUNCS_DIR}/ft_ptr_format\
+	${FUNCS_DIR}/ft_decimal_format.c
 
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
