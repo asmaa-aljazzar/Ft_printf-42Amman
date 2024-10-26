@@ -12,14 +12,3 @@ int ft_printf(const char *format, ...)
     va_end(args);
     return (printed_chars);
 }
-
-int main()
-{
-    void *ptr;
-    int c = 5;
-    ptr = &c;
-
-    int printed = ft_printf("my pointer is : %p", ptr);
-    printf("\n%d", printed);
-    return 0;
-}

@@ -31,7 +31,8 @@ static int format_type(const char *format, int i, va_list args, int printed_char
     printed_chars = ft_char_format(format, &i, args, printed_chars);
     printed_chars = ft_str_format(format, &i, args, printed_chars);
     printed_chars = ft_ptr_format(format, &i, args, printed_chars);
-    
+    printed_chars = ft_decimal_format(format, &i, args, printed_chars);
+
     //     else if (format[i] == 'd')
     //     {
     //         //TODO: Prints a decimal (base 10) number.

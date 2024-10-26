@@ -10,5 +10,6 @@ int process_format(const char *format, va_list args);
 int ft_char_format(const char *format, int *i, va_list args, int printed_chars);
 int ft_str_format(const char *format, int *i, va_list args, int printed_chars);
 int ft_ptr_format(const char *format, int *i, va_list args, int printed_chars);
+int ft_decimal_format(const char *format, int *i,va_list args, int printed_chars);
 
 #endif
