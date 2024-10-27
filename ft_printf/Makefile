@@ -9,13 +9,13 @@ LIBFT_LIB = $(LIBFT_DIR)/libft.a
 
 FUNCS_DIR = ft_printf_util
 FUNCS_SRCS = ${FUNCS_DIR}/ft_char_format.c ${FUNCS_DIR}/ft_str_format.c\
-	${FUNCS_DIR}/ft_decimal_format.c ${FUNCS_DIR}/ft_unsigned_format.c ${FUNCS_DIR}/ft_ptr_format
+	${FUNCS_DIR}/ft_decimal_format.c ${FUNCS_DIR}/ft_unsigned_format.c \
+	${FUNCS_DIR}/ft_ptr_format ${FUNCS_DIR}/ft_hex_format.c
 	
-
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 
-SRCS = ft_printf.c ft_format.c ft_format_type.c
+SRCS = ft_printf.c ft_format.c
 
 OBJS = $(SRCS:%.c=%.o)
 FUNCS_OBJS = $(FUNCS_SRCS:$(FUNCS_DIR)/%.c=$(FUNCS_DIR)/%.o)

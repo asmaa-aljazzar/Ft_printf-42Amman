@@ -39,22 +39,15 @@ static int ft_format_type(const char *format, int *i, va_list args, int printed_
         printed_chars = ft_decimal_format(format, i, args, printed_chars);
     else if (format[*i] == 'u')
         printed_chars = ft_unsigned_format(format, i, args, printed_chars);
+    else if (format[*i] == 'x')
+        printed_chars = ft_lower_hex_format(format, i, args, printed_chars);
+    else if (format[*i] == 'X')
+        printed_chars = ft_upper_hex_format(format, i, args, printed_chars);
     else
     {
         ft_putchar_fd('%', 1);
         printed_chars++;
     }
-
-    //     else if (format[i] == 'x')
-    //     {
-
-    //         //TODO: Prints a number in hexadecimal (base 16) lowercase format.
-    //     }
-    //     else if (format[i] == 'X')
-    //     {
-
-    //         //TODO: Prints a number in hexadecimal (base 16) uppercase format.
-    //     }
     return (printed_chars);
 }
 

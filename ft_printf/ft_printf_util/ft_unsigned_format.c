@@ -5,13 +5,10 @@ static int ft_unsign_len (unsigned int n);
 
 int ft_unsigned_format(const char *format, int *i,va_list args, int printed_chars)
 {
-if (format[*i] == 'u')
-    {
         unsigned int x;
         x = va_arg(args, unsigned int);
         ft_put_unsigned_nbr(x, 1);
         printed_chars += ft_unsign_len(x);
-    }
     return (printed_chars);
 }
 

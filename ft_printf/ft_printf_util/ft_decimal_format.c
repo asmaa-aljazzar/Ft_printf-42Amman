@@ -2,8 +2,6 @@
 
 int ft_decimal_format(const char *format, int *i,va_list args, int printed_chars)
 {
-if (format[*i] == 'd' || format[*i] == 'i')
-    {
         int x;
         x = va_arg(args, int);
         ft_putnbr_fd(x, 1);
@@ -14,6 +12,5 @@ if (format[*i] == 'd' || format[*i] == 'i')
         printed_chars += ft_strlen(str);
         free(str);
         }
-    }
     return (printed_chars);
 }
