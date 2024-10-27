@@ -2,7 +2,7 @@
 
 int ft_decimal_format(const char *format, int *i,va_list args, int printed_chars)
 {
-if (format[*i] == 'd')
+if (format[*i] == 'd' || format[*i] == 'i')
     {
         int x;
         x = va_arg(args, int);

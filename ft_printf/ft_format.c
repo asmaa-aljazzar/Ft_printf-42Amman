@@ -1,6 +1,6 @@
 #include "ft_printf.h"
-
-static int format_type(const char *format, int i, va_list args, int printed_chars);
+static int ft_format_type(const char *format, int *i, va_list args, int printed_chars);
+static int ft_per_or_not_format(const char *format, int *i, va_list args, int printed_chars);
 
 int process_format(const char *format, va_list args)
 {
@@ -19,34 +19,32 @@ int process_format(const char *format, va_list args)
         else 
         {
             i++;
-        printed_chars = format_type(format, i, args, printed_chars);
+            printed_chars = ft_per_or_not_format(format, &i, args, printed_chars);
+        
         }
     i++;
     }
     return (printed_chars);
 }
 
-static int format_type(const char *format, int i, va_list args, int printed_chars)
+static int ft_format_type(const char *format, int *i, va_list args, int printed_chars)
 {
-    printed_chars = ft_char_format(format, &i, args, printed_chars);
-    printed_chars = ft_str_format(format, &i, args, printed_chars);
-    printed_chars = ft_ptr_format(format, &i, args, printed_chars);
-    printed_chars = ft_decimal_format(format, &i, args, printed_chars);
+    if (format[*i] == 'c')
+        printed_chars = ft_char_format(format, i, args, printed_chars);
+    else if (format[*i] == 's')
+        printed_chars = ft_str_format(format, i, args, printed_chars);
+    else if (format[*i] == 'p')
+        printed_chars = ft_ptr_format(format, i, args, printed_chars);
+    else if (format[*i] == 'd' || format[*i] == 'i')
+        printed_chars = ft_decimal_format(format, i, args, printed_chars);
+    else if (format[*i] == 'u')
+        printed_chars = ft_unsigned_format(format, i, args, printed_chars);
+    else
+    {
+        ft_putchar_fd('%', 1);
+        printed_chars++;
+    }
 
-    //     else if (format[i] == 'd')
-    //     {
-    //         //TODO: Prints a decimal (base 10) number.
-    //     }
-    //     else if (format[i] == 'i')
-    //     {
-
-    //         //TODO:  Prints an integer in base 10
-    //     }
-    //     else if (format[i] == 'u')
-    //     {
-
-    //         //TODO: Prints an unsigned decimal (base 10) number.
-    //     }
     //     else if (format[i] == 'x')
     //     {
 
@@ -57,10 +55,20 @@ static int format_type(const char *format, int i, va_list args, int printed_char
 
     //         //TODO: Prints a number in hexadecimal (base 16) uppercase format.
     //     }
-    //     else if (format[i] == '%')
-    //     {
+    return (printed_chars);
+}
 
-    //         //TODO: Prints a percent sign.
-    //     }
+static int ft_per_or_not_format(const char *format, int *i,va_list args, int printed_chars)
+{
+        if (format[*i] == '%')
+            {
+                ft_putchar_fd('%', 1);
+                printed_chars++;
+                
+            }
+            else
+            {
+                printed_chars = ft_format_type(format, i, args, printed_chars);
+            }
     return (printed_chars);
 }
