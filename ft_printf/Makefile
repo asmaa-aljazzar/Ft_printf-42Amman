@@ -1,6 +1,3 @@
-#! VERY IMPORTANT
-#TODO: Change gcc to cc here and in libft Makefile
-
 NAME = libftprintf.a
 EXEC = ft_printf_exec
 
