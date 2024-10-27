@@ -1,0 +1,5 @@
+1- Delete or comment EXEC file 
+2- Add 42 haders
+3- Delete extra.txt
+4- Do pre evaluation
+

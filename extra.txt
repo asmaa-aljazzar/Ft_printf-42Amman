@@ -1,0 +1,494 @@
+#include <unistd.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+void	ft_putnbr_fd(int n, int fd)
+{
+	char	result;
+
+	if (n == -2147483648)
+	{
+		write (fd, "-2147483648", 11);
+		return ;
+	}
+	else if (n < 0)
+	{
+		write (fd, "-", 1);
+		n = n * -1;
+		ft_putnbr_fd(n, fd);
+	}
+	else if (n > 9)
+	{
+		ft_putnbr_fd(n / 10, fd);
+		ft_putnbr_fd(n % 10, fd);
+	}
+	else
+	{
+		result = n + 48;
+		write (fd, &result, 1);
+	}
+}
+
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	counter;
+
+	counter = 0;
+	while (*str++ != '\0')
+	{
+		counter++;
+	}
+	return (counter);
+}
+
+void	ft_putchar_fd(char c, int fd)
+{
+	write (fd, &c, 1);
+}
+
+void	ft_putstr_fd(char *s, int fd)
+{
+	unsigned int	len;
+
+	if (s)
+	{
+		len = ft_strlen(s);
+		write (fd, s, len);
+	}
+}
+
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	unsigned char	*temp_src;
+	unsigned char	*temp_dst;
+
+	if (src == (void *)0 && dst == (void *)0)
+		return (dst);
+	temp_src = (unsigned char *)src;
+	temp_dst = (unsigned char *)dst;
+	while (n > 0)
+	{
+		*temp_dst++ = *temp_src++;
+		n--;
+	}
+	return (dst);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	unsigned int	len;
+	char			*dst;
+
+	len = ft_strlen(s1) + 1;
+	dst = malloc(len);
+	if (!dst)
+		return (NULL);
+	ft_memcpy(dst, s1, len);
+	return (dst);
+}
+
+static int	ftlength(int n);
+static char	*allocate(int len);
+
+
+char	*ft_itoa(int n)
+{
+	int		len;
+	int		i;
+	char	*result;
+
+	if (n == -2147483648)
+		return (ft_strdup("-2147483648"));
+	len = ftlength(n);
+	result = allocate(len);
+	if (!result)
+		return (NULL);
+	if (n < 0)
+	{
+		result[0] = '-';
+		n = -n;
+	}
+	i = len - 1;
+	while (n != 0)
+	{
+		result[i] = ((n % 10) + 48);
+		n = n / 10;
+		i--;
+	}
+	result[len] = 0;
+	return (result);
+}
+
+static char	*allocate(int len)
+{
+	char	*tmp;
+
+	tmp = malloc((len + 1) * sizeof(char));
+	if (!tmp)
+		return (NULL);
+	tmp[0] = '0';
+	return (tmp);
+}
+
+static int	ftlength(int n)
+{
+	int	count;
+
+	count = 0;
+	if (n < 0)
+	{
+		count++;
+		n = -n;
+	}
+	if (n == 0)
+		count++;
+	while (n != 0)
+	{
+		n /= 10;
+		count++;
+	}
+	return (count);
+}
+
+
+int ft_str_format(const char *format, int *i, va_list args, int printed_chars)
+{
+    if (format[*i] == 's')
+    {
+        char *x;
+        x = va_arg(args, char *);
+        ft_putstr_fd(x, 1);
+        printed_chars += ft_strlen(x);
+    }
+    return (printed_chars);
+}
+
+static void ft_put_unsigned_nbr(unsigned int n, int fd);
+static int ft_unsign_len (unsigned int n);
+
+int ft_unsigned_format(const char *format, int *i,va_list args, int printed_chars)
+{
+if (format[*i] == 'u')
+    {
+        unsigned int x;
+        x = va_arg(args, unsigned int);
+        ft_put_unsigned_nbr(x, 1);
+        printed_chars += ft_unsign_len(x);
+    }
+    return (printed_chars);
+}
+
+// Recursive call for higher digits
+// Convert the last digit to char
+
+static void ft_put_unsigned_nbr(unsigned int n, int fd)
+{
+    if (n == 0)
+    {
+    write(fd, "0", 1);
+    return ;
+    }
+    if (n > 9)
+    {
+        ft_put_unsigned_nbr(n / 10, fd);
+    }
+    char digit;
+    digit = (n % 10) + '0';
+    write (1, &digit,1);
+
+}
+
+
+static int ft_unsign_len (unsigned int n)
+{
+    int len;
+
+    len = 0;
+    if (n == 0)
+        return 1;
+    while (n != 0)
+    {
+        n /= 10;
+        len++;
+    }
+    return len;
+}
+int ft_char_format(const char *format, int *i, va_list args, int printed_chars)
+{
+    if (format[*i] == 'c')
+    {
+        char x;
+        x = (char)va_arg(args, int);
+        ft_putchar_fd(x, 1);
+        printed_chars++;
+    }
+    return (printed_chars);
+}
+
+int ft_decimal_format(const char *format, int *i,va_list args, int printed_chars)
+{
+if (format[*i] == 'd' || format[*i] == 'i')
+    {
+        int x;
+        x = va_arg(args, int);
+        ft_putnbr_fd(x, 1);
+        char *str;
+        str = ft_itoa(x);
+        if (str)
+        {
+        printed_chars += ft_strlen(str);
+        free(str);
+        }
+    }
+    return (printed_chars);
+}
+
+
+static int print_pointer_in_hex(unsigned long addr, int printed_chars);
+
+int ft_ptr_format(const char *format, int *i, va_list args, int printed_chars)
+{
+    if (format[*i] == 'p')
+    {
+        void *ptr; 
+        ptr = va_arg(args, void *);
+        unsigned long addr = (unsigned long)ptr;
+        printed_chars = print_pointer_in_hex(addr, printed_chars);
+    }
+    return (printed_chars);
+}
+
+static int print_pointer_in_hex(unsigned long addr,int printed_chars)
+{
+    char buffer[20];
+    int index;
+
+    index = 19;
+    buffer[index--] = '\0';
+    if (!addr)
+        buffer[index--] = '0';
+    else
+    {
+        while (addr > 0)
+        {
+            int digit = addr % 16;
+            if ( digit < 10)
+            {
+                buffer[index--] = digit + '0';
+                printed_chars++;
+            }
+            else
+            {
+                buffer[index--] = digit - 10 + 'a';
+                printed_chars++;
+            }
+            addr /= 16;
+        }
+    }
+    buffer[index--] = 'x';
+    buffer[index] = '0';
+    printed_chars += 2;
+    ft_putstr_fd(&buffer[index], 1);
+    return (printed_chars);
+}
+
+static void ft_put_hex(unsigned int n, int is_uppercase);
+static int ft_hex_len(unsigned int n);
+
+int ft_lower_hex_format(const char *format, int *i, va_list args, int printed_chars)
+{
+    unsigned int n;
+    n = va_arg(args, unsigned int);
+    ft_put_hex(n, 0);
+    printed_chars += ft_hex_len(n);
+    return (printed_chars);
+}
+
+int ft_upper_hex_format(const char *format, int *i, va_list args, int printed_chars)
+{
+    unsigned int n;
+    n = va_arg(args, unsigned int);
+    ft_put_hex(n, 1);
+    printed_chars += ft_hex_len(n);
+    return (printed_chars);
+}
+
+static void ft_put_hex(unsigned int n, int is_uppercase)
+{
+    char *hex_digits;
+
+    if (is_uppercase)
+        hex_digits = "0123456789ABCDEF";
+    else
+        hex_digits = "0123456789abcdef";
+    
+    if (n > 16)
+    {
+        ft_put_hex (n / 16, is_uppercase);
+        ft_put_hex (n % 16, is_uppercase);
+    }
+    else
+        ft_putchar_fd(hex_digits[n], 1);
+}
+
+static int ft_hex_len(unsigned int n)
+{
+    int len;
+
+    len = 0;
+    if (n == 0)
+        return (1);
+    while (n > 0)
+    {
+        n /= 16;
+        len++;
+    }
+    return (len);
+}
+static int ft_format_type(const char *format, int *i, va_list args, int printed_chars)
+{
+    if (format[*i] == 'c')
+        printed_chars = ft_char_format(format, i, args, printed_chars);
+    else if (format[*i] == 's')
+        printed_chars = ft_str_format(format, i, args, printed_chars);
+    else if (format[*i] == 'p')
+        printed_chars = ft_ptr_format(format, i, args, printed_chars);
+    else if (format[*i] == 'd' || format[*i] == 'i')
+        printed_chars = ft_decimal_format(format, i, args, printed_chars);
+    else if (format[*i] == 'u')
+        printed_chars = ft_unsigned_format(format, i, args, printed_chars);
+    else if (format[*i] == 'x')
+        printed_chars = ft_lower_hex_format(format, i, args, printed_chars);
+    else if (format[*i] == 'X')
+        printed_chars = ft_upper_hex_format(format, i, args, printed_chars);
+     else
+     {
+        ft_putchar_fd('%', 1);
+        printed_chars++;
+     }
+
+    return (printed_chars);
+}
+
+static int ft_per_or_not_format(const char *format, int *i,va_list args, int printed_chars)
+{
+        if (format[*i] == '%')
+            {
+                ft_putchar_fd('%', 1);
+                printed_chars++;
+                
+            }
+            else
+            {
+                printed_chars = ft_format_type(format, i, args, printed_chars);
+            }
+    return (printed_chars);
+}
+
+int process_format(const char *format, va_list args)
+{
+    int printed_chars;
+    int i;
+
+    printed_chars = 0;
+    i = 0;
+    while (format[i] != '\0')
+    {
+        if (format[i] != '%')
+        {
+            ft_putchar_fd(format[i], 1);
+            printed_chars++;
+        }
+        else 
+        {
+            i++;
+            printed_chars = ft_per_or_not_format(format, &i, args, printed_chars);
+        
+        }
+    i++;
+    }
+    return (printed_chars);
+}
+
+
+int ft_printf(const char *format, ...)
+{
+    va_list args;
+    int printed_chars;
+
+    printed_chars = 0;
+    va_start(args, format);
+    printed_chars = process_format(format, args);
+    va_end(args);
+    return (printed_chars);
+}
+
+int main()
+{
+    int printed_chars;
+ // Test 1: Print a character
+    printed_chars = ft_printf("\nCharacter: %c\n", 'A');
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nCharacter: %c\n", 'A');
+    printf("Printed characters: %d\n\n", printed_chars);
+    ft_printf("_________________________________________________\n");
+    // Test 2: Print a string
+    printed_chars = ft_printf("\nString: %s\n", "Hello, World!");
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nString: %s\n", "Hello, World!");
+    printf("Printed characters: %d\n\n", printed_chars);
+
+    ft_printf("_________________________________________________\n");
+    // Test 3: Print an integer
+    printed_chars = ft_printf("\nInteger: %d\n", 42);
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nInteger: %d\n", 42);
+    printf("Printed characters: %d\n\n", printed_chars);
+
+    ft_printf("_________________________________________________\n");
+    // Test 4: Print a negative integer
+    printed_chars = ft_printf("\nNegative Integer: %d\n", -42);
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nNegative Integer: %d\n", -42);
+    printf("Printed characters: %d\n\n", printed_chars);
+
+    ft_printf("_________________________________________________\n");
+    // Test 5: Print an unsigned integer
+    printed_chars = ft_printf("\nUnsigned Integer: %u\n", 42);
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nUnsigned Integer: %u\n", 42);
+    printf("Printed characters: %d\n\n", printed_chars);
+
+    ft_printf("_________________________________________________\n");
+    // Test 6: Print a hexadecimal (lowercase)
+    printed_chars = ft_printf("\nHexadecimal (lowercase): %x\n", 255);
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nHexadecimal (lowercase): %x\n", 255);
+    printf("Printed characters: %d\n\n", printed_chars);
+
+    ft_printf("_________________________________________________\n");
+    // Test 7: Print a hexadecimal (uppercase)
+    printed_chars = ft_printf("\nHexadecimal (uppercase): %X\n", 255);
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nHexadecimal (uppercase): %X\n", 255);
+    printf("Printed characters: %d\n\n", printed_chars);
+
+    ft_printf("_________________________________________________\n");
+    // Test 8: Print a pointer (address)
+    int value = 42;
+    printed_chars = ft_printf("\nPointer: %p\n", (void *)&value);
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nPointer: %p\n", (void *)&value);
+    printf("Printed characters: %d\n\n", printed_chars);
+    
+    ft_printf("_________________________________________________\n");
+    // Test 9: Print a mix of formats
+    printed_chars = ft_printf("\nMix: %c %s %d %u %x %X\n", 'B', "Test", 123, 123, 123, 123);
+    ft_printf("Printed characters: %d\n\n", printed_chars);
+    printed_chars = printf("\nMix: %c %s %d %u %x %X\n", 'B', "Test", 123, 123, 123, 123);
+    printf("Printed characters: %d\n\n", printed_chars);
+   
+    return(0);
+}
