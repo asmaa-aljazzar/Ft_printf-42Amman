@@ -1,46 +1,72 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_ptr_format.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/02 14:41:51 by aaljazza          #+#    #+#             */
+/*   Updated: 2024/11/02 14:41:54 by aaljazza         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../ft_printf.h"
 
-static int print_pointer_in_hex(unsigned long addr, int printed_chars);
+static int	ft_p(unsigned long nb, int printed_chars);
+static int	ft_pointer(unsigned long nb);
+static int	ft_putchar(char c, int fd);
 
-int ft_ptr_format(const char *format, int *i, va_list args, int printed_chars)
+int	ft_ptr_format(va_list args, int printed_chars)
 {
-        void *ptr; 
-        ptr = va_arg(args, void *);
-        unsigned long addr = (unsigned long)ptr;
-        printed_chars = print_pointer_in_hex(addr, printed_chars);
-    return (printed_chars);
+	void			*ptr;
+
+	ptr = va_arg(args, void *);
+	if (ptr == NULL)
+	{
+		ft_putstr_fd("(nil)", 1);
+		return (printed_chars + 5);
+	}
+	return (ft_p((unsigned long)ptr, printed_chars));
 }
 
-static int print_pointer_in_hex(unsigned long addr,int printed_chars)
+static int	ft_p(unsigned long nb, int printed_chars)
 {
-    char buffer[20];
-    int index;
+	if (nb == 0)
+	{
+		write(1, "(nil)", 5);
+		printed_chars = 5;
+	}
+	else
+	{
+		ft_putstr_fd("0x", 1);
+		printed_chars += (ft_pointer(nb) + 2);
+	}
+	return (printed_chars);
+}
 
-    index = 19;
-    buffer[index--] = '\0';
-    if (!addr)
-        buffer[index--] = '0';
-    else
-    {
-        while (addr > 0)
-        {
-            int digit = addr % 16;
-            if ( digit < 10)
-            {
-                buffer[index--] = digit + '0';
-                printed_chars++;
-            }
-            else
-            {
-                buffer[index--] = digit - 10 + 'a';
-                printed_chars++;
-            }
-            addr /= 16;
-        }
-    }
-    buffer[index--] = 'x';
-    buffer[index] = '0';
-    printed_chars += 2;
-    ft_putstr_fd(&buffer[index], 1);
-    return (printed_chars);
+static int	ft_pointer(unsigned long nb)
+{
+	char	*base;
+	int		len;
+
+	base = "0123456789abcdef";
+	len = 0;
+	if (nb >= 16)
+	{
+		len += ft_pointer(nb / 16);
+		len += ft_pointer(nb % 16);
+	}
+	else
+	{
+		len += ft_putchar(base[nb % 16], 1);
+	}
+	return (len);
+}
+
+static int	ft_putchar(char c, int fd)
+{
+	int	size;
+
+	write (fd, &c, 1);
+	size = 1;
+	return (size);
 }
