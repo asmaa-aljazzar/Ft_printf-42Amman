@@ -1,7 +1,6 @@
 NAME = libftprintf.a
 MAKE = make
 
-HEAH = ft_printf.h
 FUNCS_DIR = ft_printf_util
 FUNCS_SRCS = ${FUNCS_DIR}/ft_char_format.c ${FUNCS_DIR}/ft_str_format.c\
 	${FUNCS_DIR}/ft_decimal_format.c ${FUNCS_DIR}/ft_unsigned_format.c\
